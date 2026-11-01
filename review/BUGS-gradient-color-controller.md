@@ -34,3 +34,11 @@ What it is: gradient picker control for the background controls: `index.js` (173
 ## Not covered
 - Unless a row says "Verified", I only read the code. No automated tests were run.
 - Chrome-only and WordPress 7.1.3 / PHP 8.2 on Local where something was run.
+
+## Fix branch
+Branch `fix/robust-gradient-parsing`, pushed to the fork `suhaeel/gradient-color-controller`. Based on the default branch; the default branch itself is untouched.
+
+Rewrites `parseGradientColor` to split the arguments at top-level commas and keep each colour as written, never throws, and returns the control's defaults for an empty or unreadable value. The control now starts from the saved value and reports only changes made by the user.
+
+Tested: all 12 inputs from the table above parse without throwing and keep named, hsl and spaced rgba colours; 2000 random round trips through the control's own output format with 0 mismatches. **Rendered the component with React and jsdom**: opening it with `red -> green` called `onChange` twice on master (first with a transparent gradient, then with `#0000 #0000`); on the fix branch it makes **0 calls**, and picking a new first colour keeps the second one (`blue 0%, green 100%`).
+Not done: a gradient written with `to right` still shows angle 45 in the controls, because the control has no direction field.
